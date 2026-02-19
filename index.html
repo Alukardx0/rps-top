@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+    function playGame() {
+        const CHOICES= ["rock", "paper", "scissors"];
+        let humanScore = 0;
+        let computerScore = 0;
+
+        function getComputerChoice(){
+            const randomIndex= Math.floor(Math.random()*CHOICES.length);
+            return CHOICES[randomIndex];
+            
+        }
+        
+
+        function getHumanChoice(){
+            while (true) {
+                const input = prompt("Please select your move");
+
+                if (input === null) return null; //handles if user cancels prompt
+
+                const userInput = input.toLowerCase().trim();
+
+                if (CHOICES.includes(userInput)){
+                    return userInput;
+                }
+                alert("Invalid option")
+            }
+        }
+        
+
+        //play round
+        function playRound(humanChoice, computerChoice){
+            const humanIndex= CHOICES.indexOf(humanChoice);
+            const computerIndex=CHOICES.indexOf(computerChoice);
+
+            if (humanChoice===computerChoice){
+                console.log("tie")
+                return;
+            } 
+            
+            const result = (humanIndex - computerIndex + CHOICES.length) % CHOICES.length;
+
+            if (result===1){
+                humanScore++;
+                console.log("Win")
+            } else {
+                computerScore++;
+                console.log("Lost")
+            }
+            console.log(`Score: You: ${humanScore} | Computer: ${computerScore}`);
+        }
+        
+        //5rounds
+        for (let i = 1; i<=5; i++){
+            console.log(`Round ${i}`);
+
+            const humanChoice=getHumanChoice();
+
+            if (humanChoice===null){
+                console.log("Cancelled");
+                return;
+            }
+
+            const computerChoice=getComputerChoice();
+
+            playRound(humanChoice, computerChoice);
+        }
+
+        console.log("Result");
+
+        if (humanScore > computerScore){
+            console.log("You win");
+        } else if (computerScore >humanScore){
+            console.log("You lost");
+        } else {
+            console.log("Tie");
+        }
+
+        console.log(`Score: You: ${humanScore} | Computer: ${computerScore}`)
+    }
+playGame();
+
+    /*javaWITHOUT ARRAYS:
+    function getComputerChoise(){
+    const randomNum= Math.floor(Math.random()*3);
+
+    if (randomNum===0){
+        return "Rock";
+    } else if (randomNum===1){
+        return "Paper";
+    } else {
+        return "Scissor";
+    }
+    }
+    */
+    </script>
+    
+</body>
+</html>
