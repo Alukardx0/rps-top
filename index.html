@@ -9,17 +9,20 @@
     
     <script>
     function playGame() {
-        const CHOICES= ["rock", "paper", "scissors"];
+        const CHOICES= ["rock", "paper", "scissors"]; //array [0][1][2] is used to store options, Will be able to add new options later.
+        const ROUNDS=5;
+        
         let humanScore = 0;
         let computerScore = 0;
-
+        
+        //getComputerChoice
         function getComputerChoice(){
-            const randomIndex= Math.floor(Math.random()*CHOICES.length);
-            return CHOICES[randomIndex];
-            
+            const randomIndex= Math.floor(Math.random()*CHOICES.length); //length: 3, so range is 0-2.999...which is then rounded down by Math.floor
+            return CHOICES[randomIndex]; //outputs 1 element from array with the value generated from randomIndex(0,1,2)
+        //if randomIndex=CHOICES.length -> undefined bc that index does not exist, thats y Math.floor() is needed.    
         }
         
-
+        // getHumanChoice
         function getHumanChoice(){
             while (true) {
                 const input = prompt("Please select your move");
@@ -36,7 +39,7 @@
         }
         
 
-        //play round
+        //playRound
         function playRound(humanChoice, computerChoice){
             const humanIndex= CHOICES.indexOf(humanChoice);
             const computerIndex=CHOICES.indexOf(computerChoice);
