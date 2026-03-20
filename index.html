@@ -54,7 +54,7 @@
             }
             //tie check
             if (humanChoice === computerChoice){
-                console.log('Tie! Both chose ${humanChoice}.');
+                console.log(`Tie! Both chose ${humanChoice}.`);
                 return;
             } 
             
@@ -66,10 +66,10 @@
 
             if (result===1){
                 humanScore++;
-                console.log('You win! ${humanChoice} beats ${computerChoice}')
+                console.log(`You win! ${humanChoice} beats ${computerChoice}.`);
             } else {
                 computerScore++;
-                console.log('You lost! ${computerChoice} beats ${humanChoice}')
+                console.log(`You lost! ${computerChoice} beats ${humanChoice}.`);
             }
             console.log(`Score: You: ${humanScore} | Computer: ${computerScore}`);
         }
