@@ -24,70 +24,83 @@
         
         // getHumanChoice
         function getHumanChoice(){
-            while (true) {
-                const input = prompt("Please select your move");
+            while (true) {          //infinite loop, only stops by 'break'/'return'/ user cancels / invalid input
+                const input = prompt("Please select your move"); //prompt
 
-                if (input === null) return null; //handles if user cancels prompt
+                if (input === null) return null; //handles safely if user cancels prompt. 
+                                                // without this line, next line "input.toLowerCase()" would crash
+                const userInput = input.toLowerCase().trim(); // lowercase & removes spaces front & back
 
-                const userInput = input.toLowerCase().trim();
-
-                if (CHOICES.includes(userInput)){
+                if (CHOICES.includes(userInput)){   //checks if input valid. includes() checks if userInput is one of values in CHOICES
                     return userInput;
                 }
-                alert("Invalid option")
+                alert("Invalid Option!!!")
+                //Loops back to top due to "while(true)"
             }
         }
         
 
-        //playRound
+        //playRound -> take player & comp moves, determine winner of rounds, update correct scores, print result
         function playRound(humanChoice, computerChoice){
+            //convert choices into index positions.
             const humanIndex= CHOICES.indexOf(humanChoice);
             const computerIndex=CHOICES.indexOf(computerChoice);
 
-            if (humanChoice===computerChoice){
-                console.log("tie")
+            //safety guard. indexOf() returns -1 if value not found. eg, enter wrong word.
+            //not necessary bc this program already validates input before calling playRound. But still good defensive coding?in case bug from later changes.
+            if (humanIndex === -1 || computerIndex === -1){
+                console.log("Invalid choice.");
+                return;
+            }
+            //tie check
+            if (humanChoice === computerChoice){
+                console.log('Tie! Both chose ${humanChoice}.');
                 return;
             } 
             
+            //Winner math.
             const result = (humanIndex - computerIndex + CHOICES.length) % CHOICES.length;
+            //eg, humanIndex = 1, computerIndex = 0
+            //(1-0+3)%3 = 4%3 = 1 -> human wins. Winning case always = 1. 
+            //this logic only works on exact order of CHOICES
 
             if (result===1){
                 humanScore++;
-                console.log("Win")
+                console.log('You win! ${humanChoice} beats ${computerChoice}')
             } else {
                 computerScore++;
-                console.log("Lost")
+                console.log('You lost! ${computerChoice} beats ${humanChoice}')
             }
             console.log(`Score: You: ${humanScore} | Computer: ${computerScore}`);
         }
         
-        //5rounds
-        for (let i = 1; i<=5; i++){
-            console.log(`Round ${i}`);
+        //5rounds. Main game loop. 
+        for (let i = 1; i<=ROUNDS; i++){ //repeat block for each round. start at round 1. loops ends at ROUNDS=5
+            console.log(`Round ${i}`); 
 
-            const humanChoice=getHumanChoice();
+            const humanChoice=getHumanChoice(); //calls getHumanChoice() function. Then, humanChoice stores the player's move.
 
-            if (humanChoice===null){
+            if (humanChoice===null){ //checks if user cancels -> null, stops game.
                 console.log("Cancelled");
-                return;
+                return; //'return' is here bc this code is inside playGame(), meaning exit entire playGame() immediately. No more rounds&final results. Without it game continues to run and cause bugs.
             }
 
-            const computerChoice=getComputerChoice();
+            const computerChoice=getComputerChoice();//calls getComputerChoice() & stores in computerChoice
 
-            playRound(humanChoice, computerChoice);
+            playRound(humanChoice, computerChoice); //sends both choices into round logic.
+            //eg, if humanChoice = "rock" & computerChoice ="scissors" -> playRound("rock", "scissors");
         }
 
-        console.log("Result");
+        console.log("==Result=="); 
 
         if (humanScore > computerScore){
-            console.log("You win");
+            console.log("You win!");
         } else if (computerScore >humanScore){
-            console.log("You lost");
+            console.log("You lost!");
         } else {
-            console.log("Tie");
+            console.log("Tie!");
         }
-
-        console.log(`Score: You: ${humanScore} | Computer: ${computerScore}`)
+        console.log(`Final Score: You: ${humanScore} | Computer: ${computerScore}`);
     }
 playGame();
 
@@ -104,6 +117,7 @@ playGame();
     }
     }
     */
+   //more readable but long and repetitive
     </script>
     
 </body>
