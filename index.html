@@ -6,14 +6,30 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>Rock Paper Scissors Game</h1>
+    <div class="buttons">
+        <button id="rock">Rock</button>
+        <button id="paper">Paper</button>
+        <button id="scissors">Scissors</button>
+    </div>
+    <div id="results">
+        <p id="roundResult">Make your move!</p>
+        <p id="score">Score: You 0 | Computer 0</p>
+        <p id="winner"></p>
+    </div>
     <script>
     function playGame() {
         const CHOICES= ["rock", "paper", "scissors"]; //array [0][1][2] is used to store options, Will be able to add new options later.
-        const ROUNDS=5;
+        const WINNING_SCORE=5; //ends game when one player reaches 5pts
         
         let humanScore = 0;
         let computerScore = 0;
+        
+        //grabs DOM elements from page to update
+        const roundResult= document.getElementById("roundResult")
+        const scoreDisplay= document.getElementById("score")
+        const winnerDisplay= document.getElementById("winner")
+        const buttons= document.querySelectorAll("button")
         
         //getComputerChoice
         function getComputerChoice(){
@@ -22,26 +38,26 @@
         //if randomIndex=CHOICES.length -> undefined bc that index does not exist, thats y Math.floor() is needed.    
         }
         
-        // getHumanChoice
-        function getHumanChoice(){
-            while (true) {          //infinite loop, only stops by 'break'/'return'/ user cancels / invalid input
-                const input = prompt("Please select your move"); //prompt
-
-                if (input === null) return null; //handles safely if user cancels prompt. 
-                                                // without this line, next line "input.toLowerCase()" would crash
-                const userInput = input.toLowerCase().trim(); // lowercase & removes spaces front & back
-
-                if (CHOICES.includes(userInput)){   //checks if input valid. includes() checks if userInput is one of values in CHOICES
-                    return userInput;
-                }
-                alert("Invalid Option!!!")
-                //Loops back to top due to "while(true)"
-            }
+        //updates score on page
+        function updateScore() {
+            scoreDisplay.textContent = `Score: You ${humanScore} | Computer ${computerScore}`;
         }
-        
+
+        function endGame(){
+            buttons.forEach(button => button.disabled = true);
+            if (humanScore === WINNING_SCORE) {
+            winnerDisplay.textContent = "You won the game!";
+            } else {
+            winnerDisplay.textContent = "Computer won the game!";
+            }
+            }
 
         //playRound -> take player & comp moves, determine winner of rounds, update correct scores, print result
         function playRound(humanChoice, computerChoice){
+
+            if (humanScore === WINNING_SCORE || computerScore === WINNING_SCORE) {
+            return;
+            }
             //convert choices into index positions.
             const humanIndex= CHOICES.indexOf(humanChoice);
             const computerIndex=CHOICES.indexOf(computerChoice);
@@ -49,12 +65,13 @@
             //safety guard. indexOf() returns -1 if value not found. eg, enter wrong word.
             //not necessary bc this program already validates input before calling playRound. But still good defensive coding?in case bug from later changes.
             if (humanIndex === -1 || computerIndex === -1){
-                console.log("Invalid choice.");
+                roundResult.textContent = "Invalid choice.";
                 return;
             }
             //tie check
             if (humanChoice === computerChoice){
-                console.log(`Tie! Both chose ${humanChoice}.`);
+                roundResult.textContent = `Tie! Both chose ${humanChoice}.`;
+                updateScore();
                 return;
             } 
             
@@ -66,58 +83,29 @@
 
             if (result===1){
                 humanScore++;
-                console.log(`You win! ${humanChoice} beats ${computerChoice}.`);
+                roundResult.textContent = `You win this round! ${humanChoice} beats ${computerChoice}.`;
             } else {
                 computerScore++;
-                console.log(`You lost! ${computerChoice} beats ${humanChoice}.`);
+                roundResult.textContent = `You lost! ${computerChoice} beats ${humanChoice}.`;
             }
-            console.log(`Score: You: ${humanScore} | Computer: ${computerScore}`);
-        }
-        
-        //5rounds. Main game loop. 
-        for (let i = 1; i<=ROUNDS; i++){ //repeat block for each round. start at round 1. loops ends at ROUNDS=5
-            console.log(`Round ${i}`); 
-
-            const humanChoice=getHumanChoice(); //calls getHumanChoice() function. Then, humanChoice stores the player's move.
-
-            if (humanChoice===null){ //checks if user cancels -> null, stops game.
-                console.log("Cancelled");
-                return; //'return' is here bc this code is inside playGame(), meaning exit entire playGame() immediately. No more rounds&final results. Without it game continues to run and cause bugs.
+            updateScore();
+            if (humanScore === WINNING_SCORE || computerScore === WINNING_SCORE) {
+            endGame();
             }
-
-            const computerChoice=getComputerChoice();//calls getComputerChoice() & stores in computerChoice
-
-            playRound(humanChoice, computerChoice); //sends both choices into round logic.
-            //eg, if humanChoice = "rock" & computerChoice ="scissors" -> playRound("rock", "scissors");
         }
+        document.getElementById("rock").addEventListener("click", () => {
+        playRound("rock", getComputerChoice());
+      });
 
-        console.log("==Result=="); 
+      document.getElementById("paper").addEventListener("click", () => {
+        playRound("paper", getComputerChoice());
+      });
 
-        if (humanScore > computerScore){
-            console.log("You win!");
-        } else if (computerScore >humanScore){
-            console.log("You lost!");
-        } else {
-            console.log("Tie!");
-        }
-        console.log(`Final Score: You: ${humanScore} | Computer: ${computerScore}`);
+      document.getElementById("scissors").addEventListener("click", () => {
+        playRound("scissors", getComputerChoice());
+      });
     }
-playGame();
-
-    /*javaWITHOUT ARRAYS:
-    function getComputerChoise(){
-    const randomNum= Math.floor(Math.random()*3);
-
-    if (randomNum===0){
-        return "Rock";
-    } else if (randomNum===1){
-        return "Paper";
-    } else {
-        return "Scissor";
-    }
-    }
-    */
-   //more readable but long and repetitive
+    playGame();
     </script>
     
 </body>
